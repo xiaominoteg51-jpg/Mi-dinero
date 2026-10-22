@@ -1,0 +1,8 @@
+MI DINERO - versión web tipo aplicación
+
+Abre index.html para usarla. Los datos se guardan en el navegador.
+Para que Chrome muestre 'Instalar como aplicación', normalmente debe estar
+servida por HTTPS o localhost; un archivo abierto directamente puede no mostrar
+esa opción.
+
+Incluye icono, manifest y funcionamiento sin conexión una vez instalada.

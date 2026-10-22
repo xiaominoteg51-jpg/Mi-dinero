@@ -1,0 +1,36 @@
+<!doctype html><html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#2563eb"><link rel="manifest" href="manifest.json"><title>Mi Dinero</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f3f6fb;color:#172033}
+header{background:#2563eb;color:#fff;padding:22px 18px;border-radius:0 0 24px 24px}
+h1{margin:0 0 5px}.sub{opacity:.9}main{max-width:850px;margin:auto;padding:16px}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.card{background:#fff;border-radius:18px;padding:16px;box-shadow:0 4px 16px #0001}
+.label{font-size:13px;color:#687386}.value{font-size:23px;font-weight:bold;margin-top:7px}
+section{margin-top:16px}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+input,button{width:100%;padding:13px;border-radius:12px;border:1px solid #d7ddea;font-size:16px}
+button{background:#2563eb;color:#fff;border:0;font-weight:bold}.danger{background:#dc2626}
+.item{display:flex;justify-content:space-between;background:#fff;padding:13px;border-radius:14px;margin:8px 0}.in{color:#15803d}.out{color:#dc2626}
+@media(max-width:600px){.cards,.row{grid-template-columns:1fr}}
+</style></head><body>
+<header><h1>💰 Mi Dinero</h1><div class="sub">Control diario de ingresos, gastos y ahorro</div></header>
+<main>
+<section class="cards"><div class="card"><div class="label">Ingresos</div><div class="value" id="income">Bs 0.00</div></div>
+<div class="card"><div class="label">Gastos</div><div class="value" id="expense">Bs 0.00</div></div>
+<div class="card"><div class="label">Disponible</div><div class="value" id="balance">Bs 0.00</div></div></section>
+<section class="card"><h2>➕ Registrar movimiento</h2>
+<div class="row"><input id="amount" type="number" min="0" step=".01" placeholder="Monto en Bs"><input id="desc" placeholder="Descripción"></div><br>
+<div class="row"><button onclick="add('in')">💵 Ingreso</button><button class="danger" onclick="add('out')">💸 Gasto</button></div></section>
+<section class="card"><h2>📋 Movimientos</h2><div id="list"></div><br><button class="danger" onclick="clearAll()">Borrar todo</button></section>
+</main>
+<script>
+const K='miDineroMovimientos';let data=JSON.parse(localStorage.getItem(K)||'[]');
+const money=n=>'Bs '+Number(n).toFixed(2);
+function esc(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function render(){let i=data.filter(x=>x.type==='in').reduce((a,x)=>a+x.amount,0),o=data.filter(x=>x.type==='out').reduce((a,x)=>a+x.amount,0);
+income.textContent=money(i);expense.textContent=money(o);balance.textContent=money(i-o);
+list.innerHTML=data.length?data.slice().reverse().map(x=>`<div class="item"><span>${x.type==='in'?'💵':'💸'} ${esc(x.desc||'Sin descripción')}<br><small>${x.date}</small></span><b class="${x.type}">${x.type==='in'?'+':'-'}${money(x.amount)}</b></div>`).join(''):'<p>No hay movimientos todavía.</p>'}
+function add(type){let a=parseFloat(amount.value),d=desc.value.trim();if(!a||a<=0){alert('Ingresa un monto válido');return}data.push({type,amount:a,desc:d,date:new Date().toLocaleString('es-BO')});localStorage.setItem(K,JSON.stringify(data));amount.value='';desc.value='';render()}
+function clearAll(){if(confirm('¿Borrar todos los movimientos?')){data=[];localStorage.setItem(K,'[]');render()}}render();
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
+</script></body></html>
