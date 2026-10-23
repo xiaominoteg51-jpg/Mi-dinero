@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#2563eb">
+<title>Mi Dinero</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f3f6fb;color:#172033}header{background:#2563eb;color:#fff;padding:22px 18px;border-radius:0 0 24px 24px}h1{margin:0 0 5px}.sub{opacity:.9}main{max-width:850px;margin:auto;padding:16px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.card{background:#fff;border-radius:18px;padding:16px;box-shadow:0 4px 16px #0001;margin-top:16px}.cards .card{margin-top:0}.label{font-size:13px;color:#687386}.value{font-size:23px;font-weight:bold;margin-top:7px}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}input,button{width:100%;padding:13px;border-radius:12px;border:1px solid #d7ddea;font-size:16px}button{background:#2563eb;color:#fff;border:0;font-weight:bold;cursor:pointer}.danger{background:#dc2626}.item{display:flex;justify-content:space-between;align-items:center;gap:10px;background:#fff;padding:13px;border-radius:14px;margin:8px 0;overflow-wrap:anywhere}.item button{width:auto;padding:8px 10px;font-size:13px}.in{color:#15803d}.out{color:#dc2626}.calendar-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}.calendar-header button{width:45px;padding:10px}.month{font-size:19px;font-weight:bold;text-align:center;flex:1}.weekdays,.calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.weekdays div{text-align:center;font-size:12px;color:#687386;padding:5px}.day{min-height:65px;background:#f7f9fc;border:1px solid #d7ddea;border-radius:10px;padding:6px;color:#172033;text-align:left}.day.empty{background:transparent;border:0}.day.today{outline:2px solid #2563eb}.day.selected{background:#dbeafe;border-color:#2563eb}.day-number{font-weight:bold;font-size:13px}.day-balance{font-size:11px;margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.positive{color:#15803d}.negative{color:#dc2626}.zero{color:#687386}.daily-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.summary-box{background:#f7f9fc;border-radius:12px;padding:12px}.summary-label{font-size:12px;color:#687386;margin-bottom:5px}.empty-msg{color:#687386;text-align:center;padding:12px}.notice{display:none;padding:12px;border-radius:10px;margin-top:12px;background:#fee2e2;color:#991b1b}
+@media(max-width:600px){.cards{grid-template-columns:1fr}.row{grid-template-columns:1fr}.daily-summary{grid-template-columns:1fr}.day{min-height:58px;padding:4px}.day-balance{font-size:10px}}
+</style>
+</head>
+<body>
+<header><h1>💰 Mi Dinero</h1><div class="sub">Control diario de ingresos, gastos y ahorro</div></header>
+<main>
+<section class="cards">
+<div class="card"><div class="label">Ingresos totales</div><div class="value" id="income">Bs 0.00</div></div>
+<div class="card"><div class="label">Gastos totales</div><div class="value" id="expense">Bs 0.00</div></div>
+<div class="card"><div class="label">Saldo disponible</div><div class="value" id="balance">Bs 0.00</div></div>
+</section>
+<section class="card"><h2>➕ Registrar movimiento</h2>
+<div class="row"><input id="amount" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Monto en Bs"><input id="desc" maxlength="120" placeholder="Descripción"></div>
+<p class="label">Fecha del movimiento (se coloca automáticamente la fecha de hoy)</p><input id="date" type="date">
+<br><br><div class="row"><button type="button" onclick="add('in')">💵 Registrar ingreso</button><button type="button" class="danger" onclick="add('out')">💸 Registrar gasto</button></div><div id="notice" class="notice" role="alert"></div>
+</section>
+<section class="card"><h2>📅 Calendario</h2><div class="calendar-header"><button type="button" onclick="changeMonth(-1)" aria-label="Mes anterior">‹</button><div class="month" id="monthTitle"></div><button type="button" onclick="changeMonth(1)" aria-label="Mes siguiente">›</button></div><div class="weekdays"><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div></div><div class="calendar" id="calendar"></div></section>
+<section class="card"><h2>📊 Resumen del día</h2><p id="selectedDateText"></p><div class="daily-summary"><div class="summary-box"><div class="summary-label">Ingresos</div><strong class="in" id="dayIncome">Bs 0.00</strong></div><div class="summary-box"><div class="summary-label">Gastos</div><strong class="out" id="dayExpense">Bs 0.00</strong></div><div class="summary-box"><div class="summary-label">Saldo del día</div><strong id="dayBalance">Bs 0.00</strong></div></div><br><div class="label">Saldo acumulado hasta este día</div><div class="value" id="accumulated">Bs 0.00</div></section>
+<section class="card"><h2>📋 Movimientos del día</h2><div id="dayList"></div></section>
+<section class="card"><h2>📋 Todos los movimientos</h2><div id="list"></div><br><button type="button" class="danger" onclick="clearAll()">🗑️ Borrar todos los movimientos</button></section>
+</main>
+<script>
+'use strict';
+const K='miDineroMovimientos_v2';
+const OLD_K='miDineroMovimientos';
+let data=[];
+let selectedDate=today();
+let currentMonth=new Date(); currentMonth.setDate(1);
+function today(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function money(n){return 'Bs '+(Number(n)||0).toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function showNotice(msg){const el=document.getElementById('notice');el.textContent=msg;el.style.display='block';}
+function hideNotice(){const el=document.getElementById('notice');el.textContent='';el.style.display='none';}
+function load(){try{let raw=localStorage.getItem(K);if(raw===null){raw=localStorage.getItem(OLD_K);if(raw!==null){localStorage.setItem(K,raw);}}const parsed=JSON.parse(raw||'[]');data=Array.isArray(parsed)?parsed.filter(x=>x&&Number.isFinite(Number(x.amount))&&x.date&&['in','out'].includes(x.type)).map(x=>({...x,amount:Number(x.amount),desc:String(x.desc||''),date:String(x.date)})):[];}catch(e){data=[];showNotice('No se pudo leer el almacenamiento del navegador. Comprueba que el almacenamiento esté permitido.');}}
+function save(){try{localStorage.setItem(K,JSON.stringify(data));return true;}catch(e){showNotice('No se pudo guardar. El navegador puede estar bloqueando el almacenamiento o no tener espacio. No cierres la página; copia tus registros antes de salir.');return false;}}
+function add(type){hideNotice();const amountInput=document.getElementById('amount');const descInput=document.getElementById('desc');const amount=Number(amountInput.value);const desc=descInput.value.trim();const date=today();if(!amountInput.value.trim()||!Number.isFinite(amount)||amount<=0){showNotice('Escribe un monto válido mayor que cero.');return;}if(!desc){showNotice('Escribe una descripción del movimiento.');descInput.focus();return;}
+// La fecha se asigna automáticamente con la fecha actual del dispositivo.
+const item={id:Date.now().toString(36)+Math.random().toString(36).slice(2,8),type,amount,desc,date};data.push(item);if(!save()){data.pop();return;}selectedDate=date;currentMonth=new Date(date+'T12:00:00');currentMonth.setDate(1);amountInput.value='';descInput.value='';document.getElementById('date').value=today();render();showNotice(type==='in'?'Ingreso guardado correctamente.':'Gasto guardado correctamente.');setTimeout(hideNotice,2200);}
+function totals(date){let income=0,expense=0;data.forEach(x=>{if(x.date===date){if(x.type==='in')income+=x.amount;else expense+=x.amount;}});return {income,expense,balance:income-expense};}
+function accumulated(date){return data.reduce((sum,x)=>x.date<=date?sum+(x.type==='in'?x.amount:-x.amount):sum,0);}
+function dateLabel(date){const d=new Date(date+'T12:00:00');return d.toLocaleDateString('es-BO',{weekday:'long',year:'numeric',month:'long',day:'numeric'});}
+function renderCalendar(){const el=document.getElementById('calendar');el.innerHTML='';const year=currentMonth.getFullYear(),month=currentMonth.getMonth();document.getElementById('monthTitle').textContent=currentMonth.toLocaleDateString('es-BO',{month:'long',year:'numeric'});const first=new Date(year,month,1);const offset=(first.getDay()+6)%7;const days=new Date(year,month+1,0).getDate();for(let i=0;i<offset;i++){const e=document.createElement('div');e.className='day empty';el.appendChild(e);}for(let day=1;day<=days;day++){const date=year+'-'+String(month+1).padStart(2,'0')+'-'+String(day).padStart(2,'0');const t=totals(date);const b=document.createElement('button');b.type='button';b.className='day'+(date===today()?' today':'')+(date===selectedDate?' selected':'');b.innerHTML='<div class="day-number">'+day+'</div><div class="day-balance '+(t.balance>0?'positive':t.balance<0?'negative':'zero')+'">'+(t.balance>0?'+':'')+(t.balance!==0?esc(money(t.balance)):'—')+'</div>';b.setAttribute('aria-label',date+' saldo '+money(t.balance));b.onclick=()=>{selectedDate=date;document.getElementById('date').value=today();render();};el.appendChild(b);}}
+function movementHTML(x,showDate){return '<div class="item"><div><strong class="'+(x.type==='in'?'in':'out')+'">'+(x.type==='in'?'+':'−')+esc(money(x.amount))+'</strong><div>'+esc(x.desc)+'</div>'+(showDate?'<small>'+esc(x.date)+'</small>':'')+'</div><button type="button" class="danger" onclick="removeItem(\''+esc(x.id)+'\')">Eliminar</button></div>';}
+function render(){const allIncome=data.filter(x=>x.type==='in').reduce((s,x)=>s+x.amount,0);const allExpense=data.filter(x=>x.type==='out').reduce((s,x)=>s+x.amount,0);document.getElementById('income').textContent=money(allIncome);document.getElementById('expense').textContent=money(allExpense);document.getElementById('balance').textContent=money(allIncome-allExpense);renderCalendar();const t=totals(selectedDate);document.getElementById('selectedDateText').textContent=dateLabel(selectedDate);document.getElementById('dayIncome').textContent=money(t.income);document.getElementById('dayExpense').textContent=money(t.expense);const db=document.getElementById('dayBalance');db.textContent=money(t.balance);db.className=t.balance>0?'positive':t.balance<0?'negative':'zero';document.getElementById('accumulated').textContent=money(accumulated(selectedDate));const day=data.filter(x=>x.date===selectedDate).slice().reverse();document.getElementById('dayList').innerHTML=day.length?day.map(x=>movementHTML(x,false)).join(''):'<div class="empty-msg">No hay movimientos en este día.</div>';const all=data.slice().sort((a,b)=>b.date.localeCompare(a.date)||(b.id||'').localeCompare(a.id||''));document.getElementById('list').innerHTML=all.length?all.map(x=>movementHTML(x,true)).join(''):'<div class="empty-msg">Todavía no hay movimientos registrados.</div>';}
+function removeItem(id){const old=data;data=data.filter(x=>x.id!==id);if(!save()){data=old;return;}render();}
+function clearAll(){if(!data.length){showNotice('No hay movimientos para borrar.');return;}if(!confirm('¿Seguro que quieres borrar TODOS los movimientos? Esta acción no se puede deshacer.'))return;const old=data;data=[];if(!save()){data=old;return;}render();showNotice('Se borraron todos los movimientos.');}
+function changeMonth(n){currentMonth=new Date(currentMonth.getFullYear(),currentMonth.getMonth()+n,1);renderCalendar();}
+// La fecha del formulario siempre vuelve a hoy al abrir o registrar un movimiento.
+document.getElementById('date').value=today();load();render();
+</script>
+</body>
+</html>
