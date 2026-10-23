@@ -1,23 +1,980 @@
-<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#2563eb"><link rel="manifest" href="manifest.json"><title>Mi Dinero</title>
+<!doctype html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#2563eb">
+<link rel="manifest" href="manifest.json">
+<title>Mi Dinero</title>
+
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f3f6fb;color:#172033}header{background:#2563eb;color:white;padding:22px 18px;border-radius:0 0 24px 24px}main{max-width:900px;margin:auto;padding:16px}.cards,.row{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.row{grid-template-columns:1fr 1fr}.card{background:white;border-radius:18px;padding:16px;margin-bottom:16px;box-shadow:0 4px 16px #0001}.value{font-size:23px;font-weight:bold;margin-top:7px}.label,.small{font-size:13px;color:#687386}input,select,button{width:100%;padding:13px;border-radius:12px;border:1px solid #d7ddea;font-size:16px}button{background:#2563eb;color:white;border:0;font-weight:bold}.danger{background:#dc2626}.calendar-head{display:flex;align-items:center;gap:10px}.calendar-head button{width:auto}.month{text-align:center;font-size:20px;font-weight:bold;flex:1}.week,.days{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.week div{text-align:center;font-size:12px;color:#687386;padding:7px}.day{min-height:70px;border:1px solid #e1e6ef;border-radius:12px;padding:6px;background:white}.empty{background:#f8fafc;border:0}.today{outline:2px solid #2563eb}.selected{background:#eff6ff}.spent{font-size:10px;color:#dc2626;margin-top:7px;font-weight:bold}.earned{font-size:10px;color:#15803d;margin-top:3px;font-weight:bold}.item{display:flex;justify-content:space-between;background:white;padding:12px;border-radius:12px;margin:7px 0}.in{color:#15803d}.out{color:#dc2626}@media(max-width:600px){.cards,.row{grid-template-columns:1fr}.day{min-height:60px}}
-</style></head><body>
-<header><h1>💰 Mi Dinero</h1><div>Ingresos, gastos, ahorro y calendario</div></header><main>
-<section class="cards"><div class="card"><div class="label">Ingresos</div><div class="value" id="income">Bs 0.00</div></div><div class="card"><div class="label">Gastos</div><div class="value" id="expense">Bs 0.00</div></div><div class="card"><div class="label">Disponible</div><div class="value" id="balance">Bs 0.00</div></div></section>
-<section class="card"><h2>➕ Registrar movimiento</h2><div class="row"><input id="amount" type="number" min="0" step=".01" placeholder="Monto en Bs"><input id="desc" placeholder="¿En qué gastaste?"></div><br><div class="row"><select id="cat"><option>🍔 Comida</option><option>🏍️ Transporte</option><option>🏠 Casa</option><option>🛒 Compras</option><option>💡 Servicios</option><option>💊 Salud</option><option>💼 Trabajo</option><option>🎮 Entretenimiento</option><option>📦 Otros</option></select><input id="date" type="date"></div><br><div class="row"><button onclick="add('in')">💵 Registrar ingreso</button><button class="danger" onclick="add('out')">💸 Registrar gasto</button></div></section>
-<section class="card"><h2>📅 Calendario</h2><div class="calendar-head"><button onclick="chg(-1)">‹</button><div class="month" id="title"></div><button onclick="chg(1)">›</button></div><div class="week"><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div><div>Dom</div></div><div class="days" id="cal"></div><div id="detail" class="card">Toca un día para ver en qué gastaste.</div></section>
-<section class="card"><h2>📋 Movimientos</h2><div id="list"></div><button class="danger" onclick="clearAll()">Borrar todo</button></section>
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f3f6fb;
+color:#172033
+}
+
+header{
+background:#2563eb;
+color:white;
+padding:22px 18px;
+border-radius:0 0 24px 24px
+}
+
+main{
+max-width:900px;
+margin:auto;
+padding:16px
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:12px
+}
+
+.row{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px
+}
+
+.card{
+background:white;
+border-radius:18px;
+padding:16px;
+margin-bottom:16px;
+box-shadow:0 4px 16px #0001
+}
+
+.value{
+font-size:23px;
+font-weight:bold;
+margin-top:7px
+}
+
+.label,.small{
+font-size:13px;
+color:#687386
+}
+
+input,select,button{
+width:100%;
+padding:13px;
+border-radius:12px;
+border:1px solid #d7ddea;
+font-size:16px
+}
+
+button{
+background:#2563eb;
+color:white;
+border:0;
+font-weight:bold;
+cursor:pointer
+}
+
+button:active{
+transform:scale(.98)
+}
+
+.danger{
+background:#dc2626
+}
+
+.calendar-head{
+display:flex;
+align-items:center;
+gap:10px
+}
+
+.calendar-head button{
+width:55px
+}
+
+.month{
+text-align:center;
+font-size:20px;
+font-weight:bold;
+flex:1
+}
+
+.week,.days{
+display:grid;
+grid-template-columns:repeat(7,1fr);
+gap:5px
+}
+
+.week div{
+text-align:center;
+font-size:12px;
+color:#687386;
+padding:7px
+}
+
+.day{
+min-height:72px;
+border:1px solid #e1e6ef;
+border-radius:12px;
+padding:6px;
+background:white;
+cursor:pointer
+}
+
+.day:active{
+transform:scale(.97)
+}
+
+.empty{
+background:#f8fafc;
+border:0;
+cursor:default
+}
+
+.today{
+outline:2px solid #2563eb
+}
+
+.selected{
+background:#eff6ff
+}
+
+.spent{
+font-size:10px;
+color:#dc2626;
+margin-top:7px;
+font-weight:bold
+}
+
+.earned{
+font-size:10px;
+color:#15803d;
+margin-top:3px;
+font-weight:bold
+}
+
+.item{
+display:flex;
+justify-content:space-between;
+gap:10px;
+background:white;
+padding:12px;
+border-radius:12px;
+margin:7px 0;
+border:1px solid #edf0f5
+}
+
+.in{
+color:#15803d
+}
+
+.out{
+color:#dc2626
+}
+
+.day-summary{
+background:#f8fafc;
+padding:12px;
+border-radius:12px;
+margin-top:12px
+}
+
+.empty-message{
+text-align:center;
+color:#687386;
+padding:12px
+}
+
+@media(max-width:600px){
+
+.cards{
+grid-template-columns:1fr
+}
+
+.row{
+grid-template-columns:1fr
+}
+
+.day{
+min-height:62px;
+font-size:14px
+}
+
+.spent,.earned{
+font-size:9px
+}
+
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+<h1>💰 Mi Dinero</h1>
+<div>Ingresos, gastos, ahorro y calendario</div>
+</header>
+
+<main>
+
+<!-- RESUMEN -->
+
+<section class="cards">
+
+<div class="card">
+<div class="label">Ingresos</div>
+<div class="value" id="income">Bs 0.00</div>
+</div>
+
+<div class="card">
+<div class="label">Gastos</div>
+<div class="value" id="expense">Bs 0.00</div>
+</div>
+
+<div class="card">
+<div class="label">Disponible</div>
+<div class="value" id="balance">Bs 0.00</div>
+</div>
+
+</section>
+
+<!-- REGISTRAR -->
+
+<section class="card">
+
+<h2>➕ Registrar movimiento</h2>
+
+<div class="row">
+
+<input
+id="amount"
+type="number"
+min="0"
+step=".01"
+placeholder="Monto en Bs">
+
+<input
+id="desc"
+placeholder="¿En qué gastaste?">
+
+</div>
+
+<br>
+
+<div class="row">
+
+<select id="cat">
+
+<option>🍔 Comida</option>
+<option>🏍️ Transporte</option>
+<option>🏠 Casa</option>
+<option>🛒 Compras</option>
+<option>💡 Servicios</option>
+<option>💊 Salud</option>
+<option>💼 Trabajo</option>
+<option>🎮 Entretenimiento</option>
+<option>📦 Otros</option>
+
+</select>
+
+<input id="date" type="date">
+
+</div>
+
+<br>
+
+<div class="row">
+
+<button onclick="add('in')">
+💵 Registrar ingreso
+</button>
+
+<button class="danger" onclick="add('out')">
+💸 Registrar gasto
+</button>
+
+</div>
+
+</section>
+
+<!-- CALENDARIO -->
+
+<section class="card">
+
+<h2>📅 Calendario</h2>
+
+<div class="calendar-head">
+
+<button onclick="chg(-1)">‹</button>
+
+<div class="month" id="title"></div>
+
+<button onclick="chg(1)">›</button>
+
+</div>
+
+<div class="week">
+
+<div>Lun</div>
+<div>Mar</div>
+<div>Mié</div>
+<div>Jue</div>
+<div>Vie</div>
+<div>Sáb</div>
+<div>Dom</div>
+
+</div>
+
+<div class="days" id="cal"></div>
+
+<div id="detail" class="card">
+
+Toca un día para ver tus movimientos.
+
+</div>
+
+</section>
+
+<!-- MOVIMIENTOS -->
+
+<section class="card">
+
+<h2>📋 Movimientos</h2>
+
+<div id="list"></div>
+
+<button class="danger" onclick="clearAll()">
+Borrar todo
+</button>
+
+</section>
+
 </main>
+
 <script>
-const K='miDineroMovimientos';let a=JSON.parse(localStorage.getItem(K)||'[]'),v=new Date(),sy=v.getFullYear(),sm=v.getMonth(),sel=key(v);
-const mons=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-function pad(n){return String(n).padStart(2,'0')}function key(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}function money(n){return 'Bs '+n.toFixed(2)}
-function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function add(type){let n=+amount.value;if(!n||n<0)return alert('Ingresa un monto válido');a.push({type,n,desc:desc.value.trim(),cat:cat.value,date:date.value||key(new Date())});localStorage.setItem(K,JSON.stringify(a));desc.value='';amount.value='';render()}
-function render(){let i=a.filter(x=>x.type==='in').reduce((s,x)=>s+x.n,0),o=a.filter(x=>x.type==='out').reduce((s,x)=>s+x.n,0);income.textContent=money(i);expense.textContent=money(o);balance.textContent=money(i-o);title.textContent=mons[sm]+' '+sy;renderCal();renderList();detailDay()}
-function renderCal(){cal.innerHTML='';let first=new Date(sy,sm,1),start=(first.getDay()+6)%7,last=new Date(sy,sm+1,0).getDate();for(let i=0;i<start;i++)cal.innerHTML+='<div class="day empty"></div>';for(let d=1;d<=last;d++){let k=sy+'-'+pad(sm+1)+'-'+pad(d),z=a.filter(x=>x.date===k),o=z.filter(x=>x.type==='out').reduce((s,x)=>s+x.n,0),i=z.filter(x=>x.type==='in').reduce((s,x)=>s+x.n,0);cal.innerHTML+=`<div class="day ${k===key(new Date())?'today ':''}${k===sel?'selected':''}" onclick="selectDay('${k}')"><b>${d}</b>${o?`<div class=spent>−${money(o)}</div>`:''}${i?`<div class=earned>+${money(i)}</div>`:''}</div>`}}
-function selectDay(k){sel=k;renderCal();detailDay()}function detailDay(){let z=a.filter(x=>x.date===sel),o=z.filter(x=>x.type==='out').reduce((s,x)=>s+x.n,0);detail.innerHTML='<b>📅 '+sel+'</b><br><span class=small>Gastos del día: '+money(o)+'</span>'+(z.length?z.map(x=>`<div class=item><span>${x.type==='in'?'💵':'💸'} ${esc(x.desc||'Sin descripción')}<br><span class=small>${esc(x.cat)}</span></span><b class=${x.type}>${x.type==='in'?'+':'-'}${money(x.n)}</b></div>`).join(''):'<p>No hay movimientos este día.</p>')}
-function renderList(){list.innerHTML=a.slice().reverse().map(x=>`<div class=item><span>${x.type==='in'?'💵':'💸'} ${esc(x.desc||'Sin descripción')}<br><span class=small>${x.date} · ${esc(x.cat)}</span></span><b class=${x.type}>${x.type==='in'?'+':'-'}${money(x.n)}</b></div>`).join('')||'<p>No hay movimientos todavía.</p>'}
-function chg(n){sm+=n;if(sm<0){sm=11;sy--}if(sm>11){sm=0;sy++}renderCal()}function clearAll(){if(confirm('¿Borrar todo?')){a=[];localStorage.setItem(K,'[]');render()}}
-date.value=key(new Date());render();if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
-</script></body></html>
+
+const K='miDineroMovimientos';
+
+/*
+Cargamos los movimientos guardados.
+Si por alguna razón localStorage tiene datos
+dañados, usamos un arreglo vacío.
+*/
+
+let a=[];
+
+try{
+
+const saved=JSON.parse(localStorage.getItem(K)||'[]');
+
+a=Array.isArray(saved)?saved:[];
+
+}catch(e){
+
+a=[];
+
+}
+
+
+let v=new Date();
+
+let sy=v.getFullYear();
+
+let sm=v.getMonth();
+
+let sel=key(v);
+
+
+const mons=[
+'Enero',
+'Febrero',
+'Marzo',
+'Abril',
+'Mayo',
+'Junio',
+'Julio',
+'Agosto',
+'Septiembre',
+'Octubre',
+'Noviembre',
+'Diciembre'
+];
+
+
+/* =========================
+   FUNCIONES BÁSICAS
+========================= */
+
+function pad(n){
+
+return String(n).padStart(2,'0');
+
+}
+
+
+function key(d){
+
+return d.getFullYear()+
+'-'+
+pad(d.getMonth()+1)+
+'-'+
+pad(d.getDate());
+
+}
+
+
+/*
+Convierte cualquier valor a número seguro.
+
+Esto evita el famoso NaN.
+*/
+
+function num(n){
+
+const v=Number(n);
+
+return Number.isFinite(v)?v:0;
+
+}
+
+
+function money(n){
+
+return 'Bs '+num(n).toFixed(2);
+
+}
+
+
+function esc(s){
+
+return String(s??'').replace(/[&<>"']/g,c=>({
+
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#39;'
+
+}[c]));
+
+}
+
+
+/* =========================
+   REGISTRAR MOVIMIENTO
+========================= */
+
+function add(type){
+
+const n=num(amount.value);
+
+if(n<=0){
+
+alert('Ingresa un monto válido');
+
+return;
+
+}
+
+
+const movimiento={
+
+type:type,
+
+n:n,
+
+desc:desc.value.trim(),
+
+cat:cat.value,
+
+date:date.value||key(new Date())
+
+};
+
+
+a.push(movimiento);
+
+
+localStorage.setItem(
+
+K,
+
+JSON.stringify(a)
+
+);
+
+
+desc.value='';
+
+amount.value='';
+
+
+/*
+Después de guardar actualizamos
+toda la pantalla.
+*/
+
+render();
+
+}
+
+
+/* =========================
+   RESUMEN
+========================= */
+
+function render(){
+
+const ingresos=a
+
+.filter(x=>x.type==='in')
+
+.reduce(
+
+(s,x)=>s+num(x.n),
+
+0
+
+);
+
+
+const gastos=a
+
+.filter(x=>x.type==='out')
+
+.reduce(
+
+(s,x)=>s+num(x.n),
+
+0
+
+);
+
+
+income.textContent=money(ingresos);
+
+expense.textContent=money(gastos);
+
+balance.textContent=money(ingresos-gastos);
+
+
+title.textContent=
+
+mons[sm]+' '+sy;
+
+
+renderCal();
+
+renderList();
+
+detailDay();
+
+}
+
+
+/* =========================
+   CALENDARIO
+========================= */
+
+function renderCal(){
+
+cal.innerHTML='';
+
+
+const first=new Date(sy,sm,1);
+
+const start=(first.getDay()+6)%7;
+
+const last=
+
+new Date(sy,sm+1,0).getDate();
+
+
+/* Días vacíos antes del día 1 */
+
+for(let i=0;i<start;i++){
+
+cal.innerHTML+=
+'<div class="day empty"></div>';
+
+}
+
+
+/* Días del mes */
+
+for(let d=1;d<=last;d++){
+
+const k=
+
+sy+
+'-'+
+pad(sm+1)+
+'-'+
+pad(d);
+
+
+const z=a.filter(x=>x.date===k);
+
+
+const gastos=z
+
+.filter(x=>x.type==='out')
+
+.reduce(
+
+(s,x)=>s+num(x.n),
+
+0
+
+);
+
+
+const ingresos=z
+
+.filter(x=>x.type==='in')
+
+.reduce(
+
+(s,x)=>s+num(x.n),
+
+0
+
+);
+
+
+const esHoy=
+
+k===key(new Date());
+
+
+const esSeleccionado=
+
+k===sel;
+
+
+cal.innerHTML+=`
+
+<div
+class="day ${esHoy?'today ':''}${esSeleccionado?'selected':''}"
+onclick="selectDay('${k}')">
+
+<b>${d}</b>
+
+${gastos>0
+?`<div class="spent">
+−${money(gastos)}
+</div>`
+:''}
+
+${ingresos>0
+?`<div class="earned">
++${money(ingresos)}
+</div>`
+:''}
+
+</div>
+
+`;
+
+}
+
+}
+
+
+/* =========================
+   SELECCIONAR DÍA
+========================= */
+
+function selectDay(k){
+
+sel=k;
+
+renderCal();
+
+detailDay();
+
+}
+
+
+/* =========================
+   DETALLE DEL DÍA
+========================= */
+
+function detailDay(){
+
+const z=a.filter(x=>x.date===sel);
+
+
+const gastos=z
+
+.filter(x=>x.type==='out')
+
+.reduce(
+
+(s,x)=>s+num(x.n),
+
+0
+
+);
+
+
+const ingresos=z
+
+.filter(x=>x.type==='in')
+
+.reduce(
+
+(s,x)=>s+num(x.n),
+
+0
+
+);
+
+
+let html=`
+
+<h3>📅 ${sel}</h3>
+
+<div class="day-summary">
+
+<div>
+💸 Gastos:
+<strong>${money(gastos)}</strong>
+</div>
+
+<div>
+💵 Ingresos:
+<strong>${money(ingresos)}</strong>
+</div>
+
+<div>
+📊 Balance del día:
+<strong>${money(ingresos-gastos)}</strong>
+</div>
+
+</div>
+
+`;
+
+
+if(!z.length){
+
+html+=`
+
+<div class="empty-message">
+
+No hay movimientos este día.
+
+</div>
+
+`;
+
+}else{
+
+html+=`
+
+<h3>Movimientos del día</h3>
+
+`;
+
+
+z.forEach(x=>{
+
+html+=`
+
+<div class="item">
+
+<span>
+
+${x.type==='in'?'💵':'💸'}
+
+<strong>
+${esc(x.desc||'Sin descripción')}
+</strong>
+
+<br>
+
+<span class="small">
+
+${esc(x.cat||'Sin categoría')}
+
+</span>
+
+</span>
+
+
+<b class="${x.type}">
+
+${x.type==='in'?'+':'-'}
+
+${money(x.n)}
+
+</b>
+
+</div>
+
+`;
+
+});
+
+}
+
+
+detail.innerHTML=html;
+
+}
+
+
+/* =========================
+   LISTA DE MOVIMIENTOS
+========================= */
+
+function renderList(){
+
+if(!a.length){
+
+list.innerHTML=
+
+'<p class="empty-message">No hay movimientos todavía.</p>';
+
+return;
+
+}
+
+
+list.innerHTML=a
+
+.slice()
+
+.reverse()
+
+.map(x=>`
+
+<div class="item">
+
+<span>
+
+${x.type==='in'?'💵':'💸'}
+
+<strong>
+${esc(x.desc||'Sin descripción')}
+</strong>
+
+<br>
+
+<span class="small">
+
+${esc(x.date||'Sin fecha')}
+
+·
+
+${esc(x.cat||'Sin categoría')}
+
+</span>
+
+</span>
+
+
+<b class="${x.type}">
+
+${x.type==='in'?'+':'-'}
+
+${money(x.n)}
+
+</b>
+
+</div>
+
+`)
+
+.join('');
+
+}
+
+
+/* =========================
+   CAMBIAR MES
+========================= */
+
+function chg(n){
+
+sm+=n;
+
+
+if(sm<0){
+
+sm=11;
+
+sy--;
+
+}
+
+
+if(sm>11){
+
+sm=0;
+
+sy++;
+
+}
+
+
+title.textContent=
+
+mons[sm]+' '+sy;
+
+renderCal();
+
+}
+
+
+/* =========================
+   BORRAR TODO
+========================= */
+
+function clearAll(){
+
+if(!confirm('¿Borrar todos los movimientos?')){
+
+return;
+
+}
+
+
+a=[];
+
+localStorage.setItem(K,'[]');
+
+sel=key(new Date());
+
+render();
+
+}
+
+
+/* =========================
+   INICIO
+========================= */
+
+date.value=key(new Date());
+
+render();
+
+
+/* Service Worker */
+
+if('serviceWorker' in navigator){
+
+navigator.serviceWorker.register('sw.js');
+
+}
+
+</script>
+
+</body>
+  </html>
