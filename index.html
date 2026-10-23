@@ -1,36 +1,535 @@
-<!doctype html><html lang="es"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#2563eb"><link rel="manifest" href="manifest.json"><title>Mi Dinero</title>
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#2563eb">
+<link rel="manifest" href="manifest.json">
+<title>Mi Dinero</title>
+
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f3f6fb;color:#172033}
-header{background:#2563eb;color:#fff;padding:22px 18px;border-radius:0 0 24px 24px}
-h1{margin:0 0 5px}.sub{opacity:.9}main{max-width:850px;margin:auto;padding:16px}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.card{background:#fff;border-radius:18px;padding:16px;box-shadow:0 4px 16px #0001}
-.label{font-size:13px;color:#687386}.value{font-size:23px;font-weight:bold;margin-top:7px}
-section{margin-top:16px}.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-input,button{width:100%;padding:13px;border-radius:12px;border:1px solid #d7ddea;font-size:16px}
-button{background:#2563eb;color:#fff;border:0;font-weight:bold}.danger{background:#dc2626}
-.item{display:flex;justify-content:space-between;background:#fff;padding:13px;border-radius:14px;margin:8px 0}.in{color:#15803d}.out{color:#dc2626}
-@media(max-width:600px){.cards,.row{grid-template-columns:1fr}}
-</style></head><body>
-<header><h1>💰 Mi Dinero</h1><div class="sub">Control diario de ingresos, gastos y ahorro</div></header>
+*{box-sizing:border-box}
+
+body{
+margin:0;
+font-family:Arial;
+background:#f3f6fb;
+color:#172033
+}
+
+header{
+background:#2563eb;
+color:#fff;
+padding:22px 18px;
+border-radius:0 0 24px 24px
+}
+
+h1{margin:0 0 5px}
+.sub{opacity:.9}
+
+main{
+max-width:850px;
+margin:auto;
+padding:16px
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:12px
+}
+
+.card{
+background:#fff;
+border-radius:18px;
+padding:16px;
+box-shadow:0 4px 16px #0001;
+margin-top:16px
+}
+
+.cards .card{margin-top:0}
+
+.label{
+font-size:13px;
+color:#687386
+}
+
+.value{
+font-size:23px;
+font-weight:bold;
+margin-top:7px
+}
+
+.row{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px
+}
+
+input,button{
+width:100%;
+padding:13px;
+border-radius:12px;
+border:1px solid #d7ddea;
+font-size:16px
+}
+
+button{
+background:#2563eb;
+color:#fff;
+border:0;
+font-weight:bold;
+cursor:pointer
+}
+
+.danger{background:#dc2626}
+
+.item{
+display:flex;
+justify-content:space-between;
+gap:10px;
+background:#fff;
+padding:13px;
+border-radius:14px;
+margin:8px 0
+}
+
+.in{color:#15803d}
+.out{color:#dc2626}
+
+/* CALENDARIO */
+
+.calendar-header{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+margin-bottom:12px
+}
+
+.calendar-header button{
+width:45px;
+padding:10px
+}
+
+.month{
+font-size:19px;
+font-weight:bold;
+text-align:center;
+flex:1
+}
+
+.weekdays,
+.calendar{
+display:grid;
+grid-template-columns:repeat(7,1fr);
+gap:5px
+}
+
+.weekdays div{
+text-align:center;
+font-size:12px;
+color:#687386;
+padding:5px
+}
+
+.day{
+min-height:65px;
+background:#f7f9fc;
+border:1px solid #d7ddea;
+border-radius:10px;
+padding:6px;
+color:#172033;
+text-align:left
+}
+
+.day.empty{
+background:transparent;
+border:0
+}
+
+.day.today{
+outline:2px solid #2563eb
+}
+
+.day.selected{
+background:#dbeafe;
+border-color:#2563eb
+}
+
+.day-number{
+font-weight:bold;
+font-size:13px
+}
+
+.day-balance{
+font-size:11px;
+margin-top:7px;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis
+}
+
+.positive{color:#15803d}
+.negative{color:#dc2626}
+.zero{color:#687386}
+
+.daily-summary{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:10px
+}
+
+.summary-box{
+background:#f7f9fc;
+border-radius:12px;
+padding:12px
+}
+
+.summary-label{
+font-size:12px;
+color:#687386;
+margin-bottom:5px
+}
+
+@media(max-width:600px){
+
+.cards{
+grid-template-columns:1fr
+}
+
+.row{
+grid-template-columns:1fr
+}
+
+.daily-summary{
+grid-template-columns:1fr
+}
+
+.day{
+min-height:58px
+}
+
+.day-balance{
+font-size:10px
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>💰 Mi Dinero</h1>
+<div class="sub">
+Control diario de ingresos, gastos y ahorro
+</div>
+</header>
+
 <main>
-<section class="cards"><div class="card"><div class="label">Ingresos</div><div class="value" id="income">Bs 0.00</div></div>
-<div class="card"><div class="label">Gastos</div><div class="value" id="expense">Bs 0.00</div></div>
-<div class="card"><div class="label">Disponible</div><div class="value" id="balance">Bs 0.00</div></div></section>
-<section class="card"><h2>➕ Registrar movimiento</h2>
-<div class="row"><input id="amount" type="number" min="0" step=".01" placeholder="Monto en Bs"><input id="desc" placeholder="Descripción"></div><br>
-<div class="row"><button onclick="add('in')">💵 Ingreso</button><button class="danger" onclick="add('out')">💸 Gasto</button></div></section>
-<section class="card"><h2>📋 Movimientos</h2><div id="list"></div><br><button class="danger" onclick="clearAll()">Borrar todo</button></section>
+
+<!-- RESUMEN GENERAL -->
+
+<section class="cards">
+
+<div class="card">
+<div class="label">Ingresos</div>
+<div class="value" id="income">Bs 0.00</div>
+</div>
+
+<div class="card">
+<div class="label">Gastos</div>
+<div class="value" id="expense">Bs 0.00</div>
+</div>
+
+<div class="card">
+<div class="label">Saldo disponible</div>
+<div class="value" id="balance">Bs 0.00</div>
+</div>
+
+</section>
+
+
+<!-- REGISTRAR -->
+
+<section class="card">
+
+<h2>➕ Registrar movimiento</h2>
+
+<div class="row">
+
+<input
+id="amount"
+type="number"
+min="0"
+step="0.01"
+placeholder="Monto en Bs">
+
+<input
+id="desc"
+placeholder="Descripción">
+
+</div>
+
+<br>
+
+<input
+id="date"
+type="date">
+
+<br><br>
+
+<div class="row">
+
+<button onclick="add('in')">
+💵 Ingreso
+</button>
+
+<button
+class="danger"
+onclick="add('out')">
+💸 Gasto
+</button>
+
+</div>
+
+</section>
+
+
+<!-- CALENDARIO -->
+
+<section class="card">
+
+<h2>📅 Calendario</h2>
+
+<div class="calendar-header">
+
+<button onclick="changeMonth(-1)">‹</button>
+
+<div class="month" id="monthTitle"></div>
+
+<button onclick="changeMonth(1)">›</button>
+
+</div>
+
+<div class="weekdays">
+
+<div>Lun</div>
+<div>Mar</div>
+<div>Mié</div>
+<div>Jue</div>
+<div>Vie</div>
+<div>Sáb</div>
+<div>Dom</div>
+
+</div>
+
+<div
+class="calendar"
+id="calendar">
+</div>
+
+</section>
+
+
+<!-- RESUMEN DEL DÍA -->
+
+<section class="card">
+
+<h2>
+📊 Resumen del día
+</h2>
+
+<p id="selectedDateText"></p>
+
+<div class="daily-summary">
+
+<div class="summary-box">
+
+<div class="summary-label">
+Ingresos
+</div>
+
+<strong
+class="in"
+id="dayIncome">
+Bs 0.00
+</strong>
+
+</div>
+
+
+<div class="summary-box">
+
+<div class="summary-label">
+Gastos
+</div>
+
+<strong
+class="out"
+id="dayExpense">
+Bs 0.00
+</strong>
+
+</div>
+
+
+<div class="summary-box">
+
+<div class="summary-label">
+Saldo del día
+</div>
+
+<strong id="dayBalance">
+Bs 0.00
+</strong>
+
+</div>
+
+</div>
+
+<br>
+
+<div class="label">
+Saldo acumulado hasta este día
+</div>
+
+<div
+class="value"
+id="accumulated">
+Bs 0.00
+</div>
+
+</section>
+
+
+<!-- MOVIMIENTOS DEL DÍA -->
+
+<section class="card">
+
+<h2>
+📋 Movimientos del día
+</h2>
+
+<div id="dayList"></div>
+
+</section>
+
+
+<!-- TODOS -->
+
+<section class="card">
+
+<h2>
+📋 Todos los movimientos
+</h2>
+
+<div id="list"></div>
+
+<br>
+
+<button
+class="danger"
+onclick="clearAll()">
+🗑️ Borrar todo
+</button>
+
+</section>
+
 </main>
+
+
 <script>
-const K='miDineroMovimientos';let data=JSON.parse(localStorage.getItem(K)||'[]');
-const money=n=>'Bs '+Number(n).toFixed(2);
-function esc(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function render(){let i=data.filter(x=>x.type==='in').reduce((a,x)=>a+x.amount,0),o=data.filter(x=>x.type==='out').reduce((a,x)=>a+x.amount,0);
-income.textContent=money(i);expense.textContent=money(o);balance.textContent=money(i-o);
-list.innerHTML=data.length?data.slice().reverse().map(x=>`<div class="item"><span>${x.type==='in'?'💵':'💸'} ${esc(x.desc||'Sin descripción')}<br><small>${x.date}</small></span><b class="${x.type}">${x.type==='in'?'+':'-'}${money(x.amount)}</b></div>`).join(''):'<p>No hay movimientos todavía.</p>'}
-function add(type){let a=parseFloat(amount.value),d=desc.value.trim();if(!a||a<=0){alert('Ingresa un monto válido');return}data.push({type,amount:a,desc:d,date:new Date().toLocaleString('es-BO')});localStorage.setItem(K,JSON.stringify(data));amount.value='';desc.value='';render()}
-function clearAll(){if(confirm('¿Borrar todos los movimientos?')){data=[];localStorage.setItem(K,'[]');render()}}render();
-if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js');
-</script></body></html>
+
+const K='miDineroMovimientos';
+
+let data=JSON.parse(
+localStorage.getItem(K)||'[]'
+);
+
+
+/* FECHA ACTUAL */
+
+function today(){
+
+const d=new Date();
+
+return d.getFullYear()+
+'-'+
+String(d.getMonth()+1).padStart(2,'0')+
+'-'+
+String(d.getDate()).padStart(2,'0');
+
+}
+
+
+let selectedDate=today();
+
+let currentMonth=new Date();
+
+currentMonth.setDate(1);
+
+
+/* FECHA DEL INPUT */
+
+document.getElementById('date').value=today();
+
+
+/* DINERO */
+
+function money(n){
+
+n=Number(n)||0;
+
+return 'Bs '+n.toFixed(2);
+
+}
+
+
+/* ESCAPAR TEXTO */
+
+function esc(s){
+
+return String(s||'').replace(
+/[&<>"']/g,
+function(c){
+
+return {
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#39;'
+
+}[c];
+
+});
+
+}
+
+
+/* GUARDAR */
+
+function save(){
+
+localStorage.setItem(
+K,
+JSON.stringify(data)
+);
+
+}
+
+
+/* OBTENER TOTALES DEL DÍA */
+
+function dayTotals(date){
+
+let income=0;
+let expense=0;
+
+data.forEach(x=>{
+
+if(x.date===date){
+
+if
