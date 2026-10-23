@@ -1,16 +1,1 @@
-{
-  "name": "Mi Dinero",
-  "short_name": "Mi Dinero",
-  "start_url": "./index.html",
-  "display": "standalone",
-  "background_color": "#f3f6fb",
-  "theme_color": "#2563eb",
-  "icons": [
-    {
-      "src": "icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    }
-  ]
-}
+{"name": "Mi Dinero", "short_name": "Mi Dinero", "start_url": "./index.html", "display": "standalone", "theme_color": "#2563eb", "background_color": "#f3f6fb", "icons": [{"src": "icon.svg", "sizes": "any", "type": "image/svg+xml"}]}
