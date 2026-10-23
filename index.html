@@ -1,5 +1,4 @@
 <!doctype html>
-
 <html lang="es">
 <head>
 <meta charset="utf-8">
@@ -9,10 +8,7 @@
 <title>Mi Dinero</title>
 
 <style>
-
-*{
-box-sizing:border-box
-}
+*{box-sizing:border-box}
 
 body{
 margin:0;
@@ -20,10 +16,6 @@ font-family:Arial,sans-serif;
 background:#f3f6fb;
 color:#172033
 }
-
-/* =========================
-   ENCABEZADO
-========================= */
 
 header{
 background:#2563eb;
@@ -63,19 +55,11 @@ font-size:19px;
 font-weight:bold
 }
 
-/* =========================
-   CONTENEDOR
-========================= */
-
 main{
 max-width:900px;
 margin:auto;
 padding:16px
 }
-
-/* =========================
-   TARJETAS RESUMEN
-========================= */
 
 .cards{
 display:grid;
@@ -108,10 +92,6 @@ font-size:13px;
 color:#687386
 }
 
-/* =========================
-   FORMULARIOS
-========================= */
-
 input,select,button{
 width:100%;
 padding:13px;
@@ -135,10 +115,6 @@ transform:scale(.98)
 .danger{
 background:#dc2626
 }
-
-/* =========================
-   CALENDARIO
-========================= */
 
 .calendar-head{
 display:flex;
@@ -211,10 +187,6 @@ margin-top:3px;
 font-weight:bold
 }
 
-/* =========================
-   MOVIMIENTOS
-========================= */
-
 .item{
 display:flex;
 justify-content:space-between;
@@ -246,10 +218,6 @@ text-align:center;
 color:#687386;
 padding:12px
 }
-
-/* =========================
-   CELULAR
-========================= */
 
 @media(max-width:600px){
 
@@ -283,94 +251,48 @@ font-size:17px
 }
 
 }
-
 </style>
-
 </head>
 
 <body>
-
-<!-- =========================
-     ENCABEZADO
-========================= -->
 
 <header>
 
 <div class="header-main">
 
 <div>
-
 <h1>💰 Mi Dinero</h1>
-
-<div>
-Ingresos, gastos, ahorro y calendario
-</div>
-
+<div>Ingresos, gastos, ahorro y calendario</div>
 </div>
 
 <div class="top-balance">
-
-<div class="top-balance-label">
-Saldo
-</div>
-
-<div id="balance">
-Bs 0.00
-</div>
-
+<div class="top-balance-label">Saldo</div>
+<div id="balance">Bs 0.00</div>
 </div>
 
 </div>
 
 </header>
 
-
 <main>
-
-<!-- =========================
-     RESUMEN
-========================= -->
 
 <section class="cards">
 
 <div class="card">
-
-<div class="label">
-Ingresos
+<div class="label">Ingresos</div>
+<div class="value" id="income">Bs 0.00</div>
 </div>
-
-<div class="value" id="income">
-Bs 0.00
-</div>
-
-</div>
-
 
 <div class="card">
-
-<div class="label">
-Gastos
-</div>
-
-<div class="value" id="expense">
-Bs 0.00
-</div>
-
+<div class="label">Gastos</div>
+<div class="value" id="expense">Bs 0.00</div>
 </div>
 
 </section>
 
-
-<!-- =========================
-     REGISTRAR MOVIMIENTO
-========================= -->
-
 <section class="card">
 
-<h2>
-➕ Registrar movimiento
-</h2>
-
+<h2>➕ Registrar movimiento</h2>
 
 <div class="row">
 
@@ -381,21 +303,17 @@ min="0"
 step=".01"
 placeholder="Monto en Bs">
 
-
 <input
 id="desc"
 placeholder="Descripción o concepto">
 
 </div>
 
-
 <br>
-
 
 <div class="row">
 
 <select id="cat">
-
 <option>🍔 Comida</option>
 <option>🏍️ Transporte</option>
 <option>🏠 Casa</option>
@@ -405,9 +323,7 @@ placeholder="Descripción o concepto">
 <option>💼 Trabajo</option>
 <option>🎮 Entretenimiento</option>
 <option>📦 Otros</option>
-
 </select>
-
 
 <input
 id="date"
@@ -415,9 +331,7 @@ type="date">
 
 </div>
 
-
 <br>
-
 
 <div class="row">
 
@@ -425,53 +339,34 @@ type="date">
 💵 Registrar ingreso
 </button>
 
-
 <button
 class="danger"
 onclick="add('out')">
-
 💸 Registrar gasto
-
 </button>
 
 </div>
 
 </section>
 
-
-<!-- =========================
-     CALENDARIO
-========================= -->
-
 <section class="card">
 
-<h2>
-📅 Calendario
-</h2>
-
+<h2>📅 Calendario</h2>
 
 <div class="calendar-head">
 
-<button onclick="chg(-1)">
-‹
-</button>
-
+<button onclick="chg(-1)">‹</button>
 
 <div
 class="month"
 id="title">
 </div>
 
-
-<button onclick="chg(1)">
-›
-</button>
+<button onclick="chg(1)">›</button>
 
 </div>
 
-
 <div class="week">
-
 <div>Lun</div>
 <div>Mar</div>
 <div>Mié</div>
@@ -479,78 +374,50 @@ id="title">
 <div>Vie</div>
 <div>Sáb</div>
 <div>Dom</div>
-
 </div>
-
 
 <div
 class="days"
 id="cal">
 </div>
 
-
 <div
 id="detail"
 class="card">
-
 Toca un día para ver tus movimientos.
-
 </div>
 
 </section>
 
-
-<!-- =========================
-     MOVIMIENTOS
-========================= -->
-
 <section class="card">
 
-<h2>
-📋 Movimientos
-</h2>
+<h2>📋 Movimientos</h2>
 
-
-<div id="list">
-</div>
-
+<div id="list"></div>
 
 <button
 class="danger"
 onclick="clearAll()">
-
 Borrar todo
-
 </button>
 
 </section>
 
 </main>
 
-
 <script>
-
-/* =========================
-   ALMACENAMIENTO
-========================= */
 
 const K='miDineroMovimientos';
 
-
 let a=[];
-
 
 try{
 
-const saved=
-JSON.parse(
+const saved=JSON.parse(
 localStorage.getItem(K)||'[]'
 );
 
-a=
-Array.isArray(saved)
-?saved
-:[];
+a=Array.isArray(saved)?saved:[];
 
 }catch(e){
 
@@ -558,26 +425,12 @@ a=[];
 
 }
 
-
-/* =========================
-   FECHA ACTUAL
-========================= */
-
 let v=new Date();
-
 let sy=v.getFullYear();
-
 let sm=v.getMonth();
-
 let sel=key(v);
 
-
-/* =========================
-   MESES
-========================= */
-
 const mons=[
-
 'Enero',
 'Febrero',
 'Marzo',
@@ -590,20 +443,11 @@ const mons=[
 'Octubre',
 'Noviembre',
 'Diciembre'
-
 ];
 
-
-/* =========================
-   FUNCIONES BÁSICAS
-========================= */
-
 function pad(n){
-
 return String(n).padStart(2,'0');
-
 }
-
 
 function key(d){
 
@@ -615,24 +459,13 @@ pad(d.getDate());
 
 }
 
-
-/*
-Convierte cualquier valor
-a un número seguro.
-
-Evita NaN.
-*/
-
 function num(n){
 
 const v=Number(n);
 
-return Number.isFinite(v)
-?v
-:0;
+return Number.isFinite(v)?v:0;
 
 }
-
 
 function money(n){
 
@@ -640,31 +473,26 @@ return 'Bs '+num(n).toFixed(2);
 
 }
 
-
 function esc(s){
 
-return String(s??'')
-.replace(/[&<>"']/g,c=>({
-
+return String(s??'').replace(
+/[&<>"']/g,
+c=>({
 '&':'&amp;',
 '<':'&lt;',
 '>':'&gt;',
 '"':'&quot;',
 "'":'&#39;'
-
-}[c]));
+}[c])
+);
 
 }
 
-
-/* =========================
-   REGISTRAR MOVIMIENTO
-========================= */
-
 function add(type){
 
-const n=num(amount.value);
-
+const n=num(
+document.getElementById('amount').value
+);
 
 if(n<=0){
 
@@ -674,163 +502,363 @@ return;
 
 }
 
-
 const movimiento={
 
 type:type,
-
 n:n,
-
-desc:desc.value.trim(),
-
-cat:cat.value,
-
-date:date.value||key(new Date())
+desc:document.getElementById('desc').value.trim(),
+cat:document.getElementById('cat').value,
+date:document.getElementById('date').value||key(new Date())
 
 };
 
-
 a.push(movimiento);
 
-
 localStorage.setItem(
-
 K,
 JSON.stringify(a)
-
 );
 
-
-desc.value='';
-
-amount.value='';
-
+document.getElementById('desc').value='';
+document.getElementById('amount').value='';
 
 render();
 
 }
 
-
-/* =========================
-   RESUMEN
-========================= */
-
 function render(){
 
-const ingresos=
-
-a
+const ingresos=a
 .filter(x=>x.type==='in')
-.reduce(
-(s,x)=>s+num(x.n),
-0
-);
+.reduce((s,x)=>s+num(x.n),0);
 
-
-const gastos=
-
-a
+const gastos=a
 .filter(x=>x.type==='out')
-.reduce(
-(s,x)=>s+num(x.n),
-0
-);
+.reduce((s,x)=>s+num(x.n),0);
 
-
-income.textContent=
+document.getElementById('income').textContent=
 money(ingresos);
 
-
-expense.textContent=
+document.getElementById('expense').textContent=
 money(gastos);
 
-
-/*
-Saldo disponible.
-Se muestra ahora
-arriba a la derecha.
-*/
-
-balance.textContent=
+document.getElementById('balance').textContent=
 money(ingresos-gastos);
 
-
-title.textContent=
+document.getElementById('title').textContent=
 mons[sm]+' '+sy;
 
-
 renderCal();
-
 renderList();
-
 detailDay();
 
 }
 
-
-/* =========================
-   CALENDARIO
-========================= */
-
 function renderCal(){
 
-cal.innerHTML='';
+const calendar=document.getElementById('cal');
 
+calendar.innerHTML='';
 
-const first=
-new Date(sy,sm,1);
+const first=new Date(sy,sm,1);
 
+const start=(first.getDay()+6)%7;
 
-const start=
-(first.getDay()+6)%7;
-
-
-const last=
-new Date(
+const last=new Date(
 sy,
 sm+1,
 0
 ).getDate();
 
-
-/* Días vacíos */
-
 for(let i=0;i<start;i++){
 
-cal.innerHTML+=
+calendar.innerHTML+=
 '<div class="day empty"></div>';
 
 }
 
-
-/* Días del mes */
-
-for(
-let d=1;
-d<=last;
-d++
-){
+for(let d=1;d<=last;d++){
 
 const k=
-
 sy+
 '-'+
 pad(sm+1)+
 '-'+
 pad(d);
 
-
-const z=
-a.filter(
+const z=a.filter(
 x=>x.date===k
 );
 
-
-const gastos=
-
-z
+const gastos=z
 .filter(x=>x.type==='out')
 .reduce(
 (s,x)=>s+num(x.n),
 0
 );
+
+const ingresos=z
+.filter(x=>x.type==='in')
+.reduce(
+(s,x)=>s+num(x.n),
+0
+);
+
+const esHoy=
+k===key(new Date());
+
+const esSeleccionado=
+k===sel;
+
+calendar.innerHTML+=`
+
+<div
+class="day ${esHoy?'today ':''}${esSeleccionado?'selected':''}"
+onclick="selectDay('${k}')">
+
+<b>${d}</b>
+
+${gastos>0?
+`<div class="spent">−${money(gastos)}</div>`
+:''}
+
+${ingresos>0?
+`<div class="earned">+${money(ingresos)}</div>`
+:''}
+
+</div>
+
+`;
+
+}
+
+}
+
+function selectDay(k){
+
+sel=k;
+
+renderCal();
+
+detailDay();
+
+}
+
+function detailDay(){
+
+const detail=
+document.getElementById('detail');
+
+const z=a.filter(
+x=>x.date===sel
+);
+
+const gastos=z
+.filter(x=>x.type==='out')
+.reduce(
+(s,x)=>s+num(x.n),
+0
+);
+
+const ingresos=z
+.filter(x=>x.type==='in')
+.reduce(
+(s,x)=>s+num(x.n),
+0
+);
+
+let html=`
+
+<h3>📅 ${sel}</h3>
+
+<div class="day-summary">
+
+<div>
+💸 Gastos:
+<strong>${money(gastos)}</strong>
+</div>
+
+<div>
+💵 Ingresos:
+<strong>${money(ingresos)}</strong>
+</div>
+
+<div>
+📊 Balance del día:
+<strong>${money(ingresos-gastos)}</strong>
+</div>
+
+</div>
+
+`;
+
+if(!z.length){
+
+html+=`
+
+<div class="empty-message">
+No hay movimientos este día.
+</div>
+
+`;
+
+}else{
+
+html+=`
+<h3>Movimientos del día</h3>
+`;
+
+z.forEach(x=>{
+
+html+=`
+
+<div class="item">
+
+<span>
+
+${x.type==='in'?'💵':'💸'}
+
+<strong>
+${esc(x.desc||'Sin descripción')}
+</strong>
+
+<br>
+
+<span class="small">
+${esc(x.cat||'Sin categoría')}
+</span>
+
+</span>
+
+<b class="${x.type}">
+
+${x.type==='in'?'+':'-'}${money(x.n)}
+
+</b>
+
+</div>
+
+`;
+
+});
+
+}
+
+detail.innerHTML=html;
+
+}
+
+function renderList(){
+
+const list=
+document.getElementById('list');
+
+if(!a.length){
+
+list.innerHTML=
+'<p class="empty-message">No hay movimientos todavía.</p>';
+
+return;
+
+}
+
+list.innerHTML=
+
+a.slice()
+.reverse()
+.map(x=>`
+
+<div class="item">
+
+<span>
+
+${x.type==='in'?'💵':'💸'}
+
+<strong>
+${esc(x.desc||'Sin descripción')}
+</strong>
+
+<br>
+
+<span class="small">
+
+${esc(x.date||'Sin fecha')}
+·
+${esc(x.cat||'Sin categoría')}
+
+</span>
+
+</span>
+
+<b class="${x.type}">
+
+${x.type==='in'?'+':'-'}${money(x.n)}
+
+</b>
+
+</div>
+
+`)
+.join('');
+
+}
+
+function chg(n){
+
+sm+=n;
+
+if(sm<0){
+
+sm=11;
+sy--;
+
+}
+
+if(sm>11){
+
+sm=0;
+sy++;
+
+}
+
+document.getElementById('title').textContent=
+mons[sm]+' '+sy;
+
+renderCal();
+
+}
+
+function clearAll(){
+
+if(!confirm(
+'¿Borrar todos los movimientos?'
+))return;
+
+a=[];
+
+localStorage.setItem(
+K,
+'[]'
+);
+
+sel=key(new Date());
+
+render();
+
+}
+
+document.getElementById('date').value=
+key(new Date());
+
+render();
+
+if('serviceWorker' in navigator){
+
+navigator.serviceWorker.register('sw.js');
+
+}
+
+</script>
+
+</body>
+   </html>
